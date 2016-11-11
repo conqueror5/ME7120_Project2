@@ -206,107 +206,41 @@ if strcmp(mode,'make')
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % Shape functions in matrix polynomial form (polyval style) for brick8
   Results = brick8_ShapeFun();
-  bn1 = Results.c1;
+  bn{1} = Results.c1;
   bnd{1} = Results.c1d;
   
-  bn2 = Results.c2;
+  bn{2} = Results.c2;
   bnd{2} = Results.c2d; 
   
-  bn3 = Results.c3;
+  bn{3} = Results.c3;
   bnd{3} = Results.c3d;
 
-  bn4 = Results.c4;
+  bn{4} = Results.c4;
   bnd{4} = Results.c4d;  
   
-  bn5 = Results.c5;
+  bn{5} = Results.c5;
   bnd{5} = Results.c5d;
   
-  bn6 = Results.c6;
+  bn{6} = Results.c6;
   bnd{6} = Results.c6d;
   
-  bn7 = Results.c7;
+  bn{7} = Results.c7;
   bnd{7} = Results.c7d;
   
-  bn8 = Results.c8;
+  bn{8} = Results.c8;
   bnd{8} = Results.c8d;  
   
-
   
-  
-  
-%   bn1 =  [  0.750  -0.500  -1.250   1.000   0.000   0.000];
-%   bn1d =  [3.75000  -2.00000  -3.75000   2.00000   0.00000];
-%   bn1dd =  [   15.00   -6.00   -7.50    2.00];
-%   bn2 =  [ 0.250  -0.250  -0.250   0.250   0.000   0.000];
-%   bn2d =  [1.25000  -1.00000  -0.75000   0.50000   0.00000];
-%   bn2dd =  [   5.000  -3.000  -1.500   0.500];
-%   bn3 =  [-0.750  -0.500   1.250   1.000   0.000   0.000];
-%   bn3d = [-3.75000  -2.00000   3.75000   2.00000   0.00000];
-%   bn3dd =[  -15.00   -6.00    7.50    2.00];
-%   bn4 =  [ 0.250   0.250  -0.250  -0.250   0.000   0.000];
-%   bn4d = [ 1.25000   1.00000  -0.75000  -0.50000   0.00000];
-%   bn4dd =[   5.000   3.000  -1.500  -0.500];
-%   bn5 =  [ 0.000   1.000  -0.000  -2.000   0.000   1.000];
-%   bn5d = [0.00000   4.00000  -0.00000  -4.00000   0.00000];
-%   bn5dd =[   0    1.20e+01   0   -4.00e+00];
-%   bn6 =  [ 1.000   0.000  -2.000  -0.000   1.000   0.000];
-%   bn6d = [ 5.0000    0.0   -6.0000   0.0    1.0000];
-%   bn6dd =[    20.0    0   -12.0  0];
-  
-  % Shape functions in matrix polynomial form (polyval style) for 
-  % torsion/rod
-%   rn1=[0.5 -.5 0];
-%   rn1d=[1 -0.5];
-%   rn2=[.5 .5 0];
-%   rn2d=[1 0.5];
-%   rn3=[-1 0 1];
-%   rn3d=[-2 0];
-  numbeamgauss=2; % Number of Gauss points for integration in the 1D case (such as a beam)
+  numbeamgauss=7; % Number of Gauss points for integration in the 1D case (such as a beam)
   [bgpts,bgpw]=gauss(numbeamgauss);
   kb=zeros(24,24);% For this brick8 element, 8 nodes, 3DOF each, is a 24 by 24
                   % matrix. 
-                 
-                 
-%   kb2=kb1; %Stiffness matrix for the x-z plane beam element. 
-%   l=norm([x2 y2 z2]-[x1 y1 z1]);
-%   propertynum=num2str(element(elnum).properties);
-%   % Allowable aspect ratio. I recommend D/l=.1
-%   if isempty(DoverL)==1
-%     DoverL=.1;
-%   end
-%   %Euler bernoulli beams must be slender. Warn if not. 
-%   if sqrt(A1*4/pi)/l>DoverL|sqrt(A2*4/pi)/l>DoverL|sqrt(A3*4/pi)/l>DoverL
-%     warndlg({['Dimensions of element ' num2str(elnum) ' using properties '...
-% 	      propertynum ' are more suitable for a Timoshenko beam.'];...
-% 	     'radius divided by length is too large'},...
-% 	    'Improper application of element.','replace')
-%   end
-  % This took some work, but provide bounds on other values. 
-%   if (Izz1+Iyy1)<(1/2.1*A1^2/pi)|(Izz2+Iyy2)<(1/2.1*A2^2/pi)|(Izz3+Iyy3)<(1/2.1*A3^2/pi)
-%     %2.0 would be exact for a circle
-%     warndlg({['Iyy+Izz for properties number' propertynum ' can''t be as '...
-% 	      'low as have been given.'];...
-% 	     'Nonphysical properties.'},['Impossible cross sectional' ...
-% 		    ' properties'],'replace')
-%   end
-%   slenderness=min([sqrt((Izz1+Iyy1)/A1) sqrt((Izz2+Iyy2)/A2) ...
-% 		   sqrt((Izz3+Iyy3)/A3)  ])/l;
-%   % Check if this is a beam or something so thin that its really a
-%   % string. 
-%   if slenderness<.002
-%     disp([num2str(elnum) ['is a rediculously thin element. Please' ...
-% 		    ' check numbers.']])
-%   end
-  
-%   Jac=l/2;% Beam Jacobian. valid only if node three is in the
-%           % middle of the beam. Luck for us, it always is (or the
-%           % code yells at you)
-%           % Local Bending in x-y plane
+
 
   X = [x1, x2, x3, x4, x5, x6, x7, x8];
   Y = [y1, y2, y3, y4, y5, y6, y7, y8];
   Z = [z1, z2, z3, z4, z5, z6, z7, z8];
-    
+
 
   for i = 1:numbeamgauss
       for j = 1:numbeamgauss
@@ -315,7 +249,7 @@ if strcmp(mode,'make')
               gpts = [bgpts(i),bgpts(j),bgpts(k)];  
               % Evaluate the Jocobian at Gauss Point
               J = jacobian(X,Y,Z,gpts); 
-              J_det = det(j);
+              J_det = det(J);
               B = [];
               % Calculate dN_i/dX, dN_i/dY, dN_i/dZ
               for n=1:8
@@ -337,7 +271,7 @@ if strcmp(mode,'make')
           end
       end
   end
-  [value,vector]=eig(kb);
+  [vectors,values]=eig(kb);
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % 
   % Derivation of Mass matrices
@@ -346,66 +280,28 @@ if strcmp(mode,'make')
   numbeamgauss=numbeamgauss+3; %Need more gauss points for the mass
                                %matrix. 
   [bgpts,bgpw]=gauss(numbeamgauss);
-  mb1=zeros(6,6); %initialize empty mass matrix
-  % Local Bending in x-y plane
-  for i=1:numbeamgauss
-    beamsfs=[polyval(bn1,bgpts(i));
-             polyval(bn2,bgpts(i))*Jac;
-             polyval(bn3,bgpts(i));
-             polyval(bn4,bgpts(i))*Jac;
-             polyval(bn5,bgpts(i));
-             polyval(bn6,bgpts(i))*Jac];
-    A=polyval(rn1*A1+rn2*A2+rn3*A3,bgpts(i));
-    mb1=mb1+bgpw(i)*beamsfs*beamsfs'*rho*A*Jac;%pause, and reflect
-                                               %(OK, this was for debugging)
+  mb=zeros(24,24); %initialize empty mass matrix
+  
+  for i = 1:numbeamgauss
+      for j = 1:numbeamgauss
+          for k = 1:numbeamgauss
+              % Coordinate of Gauss Point in a brick in the form [x,y,z]
+              gpts = [bgpts(i),bgpts(j),bgpts(k)];  
+              % Evaluate the Jocobian at Gauss Point
+              J = jacobian(X,Y,Z,gpts); 
+              J_det = det(J);
+              N = [];
+              for n = 1:8
+                  Ni = poly3dval(bn{n},gpts);
+                  N = [N, diag([Ni, Ni, Ni])];
+              end                       
+              mb = mb + bgpw(i)*bgpw(j)*bgpw(k)*N'*rho*N*J_det;
+          end
+      end
   end
-  
-  % Local Bending in x-z plane
-  mb2=zeros(6,6);
-  for i=1:numbeamgauss
-    beamsfs=[polyval(bn1,bgpts(i));
-             -polyval(bn2,bgpts(i))*Jac;
-             polyval(bn3,bgpts(i));
-             -polyval(bn4,bgpts(i))*Jac;
-             polyval(bn5,bgpts(i));
-             -polyval(bn6,bgpts(i))*Jac];
-    A=polyval(rn1*A1+rn2*A2+rn3*A3,bgpts(i));
-    mb2=mb2+bgpw(i)*beamsfs*beamsfs'*rho*A*Jac;
-  end
-  
-  % Local Extension in x, torsion about x
-  numrodgauss=numrodgauss+1; %Need more gauss points for the mass
-                             %matrix. 
-  [rgpts,rgpw]=gauss(numrodgauss);
-  mrod=zeros(3,3); %initialize empty mass matrix
-  mtor=zeros(3,3);
-  for i=1:numrodgauss
-    rodsfs=[polyval(rn1,rgpts(i));
-            polyval(rn2,rgpts(i));
-            polyval(rn3,rgpts(i))];
-    J=polyval(rn1*(Iyy1+Izz1)+rn2*(Iyy2+Izz2)+rn3*(Iyy3+Izz3),rgpts(i));
-    A=polyval(rn1*A1+rn2*A2+rn3*A3,rgpts(i));
-    mrod=mrod+rgpw(i)*rodsfs*rodsfs'*A*rho*Jac;
-    mtor=mtor+rgpw(i)*rodsfs*rodsfs'*J*rho*Jac;
-  end
-  
-  % Assembling each stiffness matrix into the complete elemental 
-  % stiffness matrix. We're just telling the sub-elements to be put
-  % into the correct spots for the total element. 
-  k=zeros(18,18);
-  k([2 6 8 12 14 18],[2 6 8 12 14 18])=kb1;
-  k([3 5 9 11 15 17],[3 5 9 11 15 17])=kb2;
-  k([1 7 13],[1 7 13])=krod;
-  k([4 10 16],[4 10 16])=ktor;
-  
-  % Assembling each mass matrix into the complete elemental 
-  % mass matrix
-  m=zeros(18,18);
-  m([2 6 8 12 14 18],[2 6 8 12 14 18])=mb1;
-  m([3 5 9 11 15 17],[3 5 9 11 15 17])=mb2;
-  m([1 7 13],[1 7 13])=mrod;
-  m([4 10 16],[4 10 16])=mtor;
-  
+  mb;
+   
+     
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %
   % Coordinate rotations
