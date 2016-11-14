@@ -6,7 +6,7 @@ function J = jacobian(X,Y,Z,pt)
 % Z = [z1, z2, z3, ..., z8]
 
 % Shape Function and corresponding derivative
-Results = brick8_ShapeFun()
+Results = brick8_ShapeFun();
 
 bn1 = Results.c1;
 bn1d = Results.c1d;
