@@ -70,7 +70,7 @@ if strcmp(mode,'generate')
   
           %There have to be 9 numbers for this element's
           %definition (above)
-  if length(b)==9
+  if length(b)==10
       element(elnum).nodes=b(1:8);
 %       %If the user puts the middle node in the wrong place, tell them.
 %       if norm((nodes(b(1),:)+nodes(b(2),:))/2-nodes(b(3),:))/ ...
@@ -80,10 +80,10 @@ if strcmp(mode,'generate')
 %                 num2str(elnum) ' on line ' num2str(curlineno) '.'])
 %       end
       element(elnum).properties=b(9);
-%       element(elnum).point=b(4);
+      element(elnum).point=b(10);
   else 
 	  b
-      %There have to be 9 numbers on a line defining the
+      %There have to be 10 numbers on a line defining the
       %element. 
       warndlg(['Element ' num2str(elnum) ' on line ' ...
                num2str(element(elnum).lineno) ' entered incorrectly.'], ...
@@ -98,7 +98,7 @@ end
 if strcmp(mode,'make')||strcmp(mode,'istrainforces')
   elnum=b;% When this mode is called, the element number is given
           % as the second input.
-  bnodes=[element(elnum).nodes];% The point is
+  bnodes=[element(elnum).nodes element(elnum).point];% The point is
                                                      % referred to
                                                      % as node 4
                                                      % below,
@@ -197,6 +197,10 @@ if strcmp(mode,'make')
   x8=nodes(bnodes(8),1);
   y8=nodes(bnodes(8),2);
   z8=nodes(bnodes(8),3);
+  
+  x9=points(bnodes(9),1);
+  y9=points(bnodes(9),2);
+  z9=points(bnodes(9),3);
   
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -310,7 +314,7 @@ if strcmp(mode,'make')
 
   R1=([x2 y2 z2]-[x1 y1 z1]);% Vector along element
   lam1=R1/norm(R1);% Unit direction
-  R2=([x4 y4 z4]-[x1 y1 z1]);%  Vector to the point
+  R2=([x9 y9 z9]-[x1 y1 z1]);%  Vector to the point
   R2perp=R2-dot(R2,lam1)*lam1;% Part of R2 perpendicular to lam1
   udirec=0;
   while norm(R2perp)<10*eps% If R2perp is too small, (point in line
@@ -331,13 +335,15 @@ if strcmp(mode,'make')
   lam2=R2perp/norm(R2perp);
   lam3=cross(lam1,lam2);
   lamloc=[lam1;lam2;lam3];
-  lam=sparse(18,18);
+  lam=sparse(24,24);
   lam(1:3,1:3)=lamloc;
   lam(4:6,4:6)=lamloc;
   lam(7:9,7:9)=lamloc;
   lam(10:12,10:12)=lamloc;
   lam(13:15,13:15)=lamloc;
   lam(16:18,16:18)=lamloc;
+  lam(19:21,19:21)=lamloc;
+  lam(22:24,22:24)=lamloc;
   
 % $$$     lam=[lamloc z z z z z;
 % $$$          z lamloc z z z z;
@@ -346,11 +352,11 @@ if strcmp(mode,'make')
 % $$$          z z z z lamloc z;
 % $$$          z z z z z lamloc];
   element(elnum).lambda=lam;
-  element(elnum).m=m;
-  element(elnum).k=k;
+  element(elnum).m=mb;
+  element(elnum).k=kb;
 
-  kg=lam'*k*lam;
-  mg=lam'*m*lam;
+  kg=lam'*kb*lam;
+  mg=lam'*mb*lam;
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %
@@ -358,19 +364,30 @@ if strcmp(mode,'make')
   %
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  bn1=bnodes(1);bn2=bnodes(2);bn3=bnodes(3);
-  indices=[bn1*6+(-5:0) bn2*6+(-5:0) bn3*6+(-5:0)] ;
+  bn1=bnodes(1);bn2=bnodes(2);bn3=bnodes(3);bn4=bnodes(4);
+  bn5=bnodes(5);bn6=bnodes(6);bn7=bnodes(7);bn8=bnodes(8);
+  indices=[bn1*3+(-2:0) bn2*3+(-2:0) bn3*3+(-2:0) bn4*3+(-2:0) bn5*3+(-2:0) bn6*3+(-2:0) bn7*3+(-2:0) bn8*3+(-2:0)] ;
 
   K(indices,indices)=K(indices,indices)+kg;
   M(indices,indices)=M(indices,indices)+mg;
 
   % At this point we also know how to draw the element (what lines
-  % and surfaces exist). For the beam3 element, 2 lines are
+  % and surfaces exist). For the brick8 element, 12 lines are
   % appropriate. Just add the pair of node numbers to the lines
   % array and that line will always be drawn.
   numlines=size(lines,1);
-  lines(numlines+1,:)=[bn1 bn3];
-  lines(numlines+2,:)=[bn3 bn2];
+  lines(numlines+1,:)=[bn1 bn2];
+  lines(numlines+2,:)=[bn2 bn3];
+  lines(numlines+3,:)=[bn3 bn4];  
+  lines(numlines+4,:)=[bn4 bn1];
+  lines(numlines+5,:)=[bn1 bn5];
+  lines(numlines+6,:)=[bn4 bn8];
+  lines(numlines+7,:)=[bn3 bn7];
+  lines(numlines+8,:)=[bn2 bn6];
+  lines(numlines+9,:)=[bn5 bn6];
+  lines(numlines+10,:)=[bn6 bn7];
+  lines(numlines+11,:)=[bn7 bn8];
+  lines(numlines+12,:)=[bn8 bn5];
   
   % If I have 4 nodes that I want to use to represent a surface, I
   % do the following.
