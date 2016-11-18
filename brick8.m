@@ -402,8 +402,13 @@ if strcmp(mode,'make')
   % You need to uncomment this line and assign values to node1,
   % node2, node3, and node4 in order to draw A SINGLE SURFACE. For
   % a brick, you need 6 lines like this. 
-  %surfs=[surfs;node1 node2 node3 node4 panelcolor];
-  
+%   surfs=[surfs;node1 node2 node3 node4 panelcolor];
+  surfs=[surfs;1 2 3 4 panelcolor];
+  surfs=[surfs;1 5 8 4 panelcolor];
+  surfs=[surfs;4 8 7 3 panelcolor];
+  surfs=[surfs;2 6 7 3 panelcolor];
+  surfs=[surfs;1 5 6 2 panelcolor];
+  surfs=[surfs;5 6 7 8 panelcolor];
   %Each surface can have a different color if you like. Just change
   %the last three numbers on the row corresponding to that
   %surface. 
