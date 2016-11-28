@@ -234,12 +234,13 @@ if strcmp(mode,'make')
   bn{8} = Results.c8;
   bnd{8} = Results.c8d;  
   
+  nu = 0.29;    % poisson's ratio 
+  Eb = YoungsModulus3D(E, nu, G);    % Young's Modulus matrix in 3D 
   
-  numbeamgauss=7; % Number of Gauss points for integration in the 1D case (such as a beam)
+  numbeamgauss=4; % Number of Gauss points for integration in the 1D case (such as a beam)
   [bgpts,bgpw]=gauss(numbeamgauss);
   kb=zeros(24,24);% For this brick8 element, 8 nodes, 3DOF each, is a 24 by 24
                   % matrix. 
-
 
   X = [x1, x2, x3, x4, x5, x6, x7, x8];
   Y = [y1, y2, y3, y4, y5, y6, y7, y8];
@@ -271,7 +272,7 @@ if strcmp(mode,'make')
                           dNdXYZ(3), 0, dNdXYZ(1)];
                   B = [B,Bi];
               end  
-              kb = kb + bgpw(i)*bgpw(j)*bgpw(k)*B'*E*B*J_det;
+              kb = kb + bgpw(i)*bgpw(j)*bgpw(k)*B'*Eb*B*J_det;
           end
       end
   end
