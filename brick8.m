@@ -237,7 +237,7 @@ if strcmp(mode,'make')
   nu = 0.29;    % poisson's ratio 
   Eb = YoungsModulus3D(E, nu, G);    % Young's Modulus matrix in 3D 
   
-  numbeamgauss=4; % Number of Gauss points for integration in the 1D case (such as a beam)
+  numbeamgauss=5; % Number of Gauss points for integration in the 1D case (such as a beam)
   [bgpts,bgpw]=gauss(numbeamgauss);
   kb=zeros(24,24);% For this brick8 element, 8 nodes, 3DOF each, is a 24 by 24
                   % matrix. 
@@ -276,7 +276,10 @@ if strcmp(mode,'make')
           end
       end
   end
-  [vectors,values]=eig(kb);
+  kb;
+  
+
+  
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % 
   % Derivation of Mass matrices
@@ -305,7 +308,32 @@ if strcmp(mode,'make')
       end
   end
   mb;
-   
+  
+  
+  
+  % Assembling stiffness matrix into the complete elemental 
+  % stiffness matrix. We're just telling the sub-elements to be put
+  % into the correct spots for the total element. 
+  k = zeros(48,48);
+  for i = 1:8
+      for j = 1:8
+          k([6*i-5:6*i-3],[6*j-5:6*j-3]) = kb([3*i-2:3*i],[3*j-2:3*j]);
+      end
+  end
+  k; 
+  [vectors,values]=eig(k);
+  
+  % Assembling each mass matrix into the complete elemental 
+  % mass matrix
+  m = zeros(48,48);
+  for i = 1:8
+      for j = 1:8
+          m([6*i-5:6*i-3],[6*j-5:6*j-3]) = mb([3*i-2:3*i],[3*j-2:3*j]);
+      end
+  end
+  m; 
+ 
+  
      
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %
@@ -313,51 +341,52 @@ if strcmp(mode,'make')
   %
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  R1=([x2 y2 z2]-[x1 y1 z1]);% Vector along element
-  lam1=R1/norm(R1);% Unit direction
-  R2=([x9 y9 z9]-[x1 y1 z1]);%  Vector to the point
-  R2perp=R2-dot(R2,lam1)*lam1;% Part of R2 perpendicular to lam1
-  udirec=0;
-  while norm(R2perp)<10*eps% If R2perp is too small, (point in line
-                           % with element, we need to cover the
-                           % users a$$ and generate a point that
-                           % isn't. We should put out a warning,
-                           % but I commented it out. 
-    udirec=udirec+1;
-    disp('oops, point is on the line of the element'); %This was my warning. 
-    %pause
-    [minval,minloc]=min(lam1);
-    R2perp=zeros(1,3);
-    R2perp(udirec)=1;
-    R2perp=R2perp-dot(R2perp,lam1)*lam1;
-  end
-  %Make the unit direction vectors for rotating and put them in the
-  %rotation matrix. 
-  lam2=R2perp/norm(R2perp);
-  lam3=cross(lam1,lam2);
-  lamloc=[lam1;lam2;lam3];
-  lam=sparse(24,24);
-  lam(1:3,1:3)=lamloc;
-  lam(4:6,4:6)=lamloc;
-  lam(7:9,7:9)=lamloc;
-  lam(10:12,10:12)=lamloc;
-  lam(13:15,13:15)=lamloc;
-  lam(16:18,16:18)=lamloc;
-  lam(19:21,19:21)=lamloc;
-  lam(22:24,22:24)=lamloc;
+%   R1=([x2 y2 z2]-[x1 y1 z1]);% Vector along element
+%   lam1=R1/norm(R1);% Unit direction
+%   R2=([x9 y9 z9]-[x1 y1 z1]);%  Vector to the point
+%   R2perp=R2-dot(R2,lam1)*lam1;% Part of R2 perpendicular to lam1
+%   udirec=0;
+%   while norm(R2perp)<10*eps% If R2perp is too small, (point in line
+%                            % with element, we need to cover the
+%                            % users a$$ and generate a point that
+%                            % isn't. We should put out a warning,
+%                            % but I commented it out. 
+%     udirec=udirec+1;
+%     disp('oops, point is on the line of the element'); %This was my warning. 
+%     %pause
+%     [minval,minloc]=min(lam1);
+%     R2perp=zeros(1,3);
+%     R2perp(udirec)=1;
+%     R2perp=R2perp-dot(R2perp,lam1)*lam1;
+%   end
+%   %Make the unit direction vectors for rotating and put them in the
+%   %rotation matrix. 
+%   lam2=R2perp/norm(R2perp);
+%   lam3=cross(lam1,lam2);
+%   lamloc=[lam1;lam2;lam3];
+% %   lam=sparse(24,24);
+%   lam=sparse(48,48);
+%   for i = 1:16
+%       lam([3*i-2:3*i],[3*i-2:3*i])=lamloc;
+%   end
+%   lam;
+% 
+%   
+% % $$$     lam=[lamloc z z z z z;
+% % $$$          z lamloc z z z z;
+% % $$$          z z lamloc z z z;
+% % $$$          z z z lamloc z z;
+% % $$$          z z z z lamloc z;
+% % $$$          z z z z z lamloc];
+%   element(elnum).lambda=lam;
+%   element(elnum).m=m;
+%   element(elnum).k=k;
+% 
+%   kg=lam'*k*lam;
+%   mg=lam'*m*lam;
   
-% $$$     lam=[lamloc z z z z z;
-% $$$          z lamloc z z z z;
-% $$$          z z lamloc z z z;
-% $$$          z z z lamloc z z;
-% $$$          z z z z lamloc z;
-% $$$          z z z z z lamloc];
-  element(elnum).lambda=lam;
-  element(elnum).m=mb;
-  element(elnum).k=kb;
-
-  kg=lam'*kb*lam;
-  mg=lam'*mb*lam;
+  kg = k;
+  mg = m;
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %
@@ -367,8 +396,9 @@ if strcmp(mode,'make')
 
   bn1=bnodes(1);bn2=bnodes(2);bn3=bnodes(3);bn4=bnodes(4);
   bn5=bnodes(5);bn6=bnodes(6);bn7=bnodes(7);bn8=bnodes(8);
-  indices=[bn1*3+(-2:0) bn2*3+(-2:0) bn3*3+(-2:0) bn4*3+(-2:0) bn5*3+(-2:0) bn6*3+(-2:0) bn7*3+(-2:0) bn8*3+(-2:0)] ;
-
+%   indices=[bn1*3+(-2:0) bn2*3+(-2:0) bn3*3+(-2:0) bn4*3+(-2:0) bn5*3+(-2:0) bn6*3+(-2:0) bn7*3+(-2:0) bn8*3+(-2:0)] ;
+  indices=[bn1*6+(-5:0) bn2*6+(-5:0) bn3*6+(-5:0) bn4*6+(-5:0) bn5*6+(-5:0) bn6*6+(-5:0) bn7*6+(-5:0) bn8*6+(-5:0)] ;
+  
   K(indices,indices)=K(indices,indices)+kg;
   M(indices,indices)=M(indices,indices)+mg;
 
