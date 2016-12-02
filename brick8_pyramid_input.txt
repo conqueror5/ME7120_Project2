@@ -53,8 +53,8 @@ load
 36 1 2.5
 
 actions
-%staticanalysis
-%plotdeformed
+staticanalysis
+plotdeformed
 %X
-kb
+%kb
 end
