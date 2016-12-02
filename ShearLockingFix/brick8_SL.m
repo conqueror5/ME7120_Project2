@@ -315,7 +315,18 @@ if strcmp(mode,'make')
   end
   kb;
   
-
+  
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %APPLY GUYAN REDUCTION  (from Andy)
+    if size(kb,1)>24 || size(kb,2)>24
+    K11=kb(1:24,1:24);
+    K12=kb(1:24,25:33);
+    K21=kb(25:33,1:24);
+    K22=kb(25:33,25:33);
+    K22=K22^-1;
+    kb=K11-(K12*K22*K21);    
+    end
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % 
@@ -471,12 +482,12 @@ if strcmp(mode,'make')
   % node2, node3, and node4 in order to draw A SINGLE SURFACE. For
   % a brick, you need 6 lines like this. 
 %   surfs=[surfs;node1 node2 node3 node4 panelcolor];
-  surfs=[surfs;1 2 3 4 panelcolor];
-  surfs=[surfs;1 5 8 4 panelcolor];
-  surfs=[surfs;4 8 7 3 panelcolor];
-  surfs=[surfs;2 6 7 3 panelcolor];
-  surfs=[surfs;1 5 6 2 panelcolor];
-  surfs=[surfs;5 6 7 8 panelcolor];
+  surfs=[surfs;bn1 bn2 bn3 bn4 panelcolor];
+  surfs=[surfs;bn1 bn5 bn8 bn4 panelcolor];
+  surfs=[surfs;bn4 bn8 bn7 bn3 panelcolor];
+  surfs=[surfs;bn2 bn6 bn7 bn3 panelcolor];
+  surfs=[surfs;bn1 bn5 bn6 bn2 panelcolor];
+  surfs=[surfs;bn5 bn6 bn7 bn8 panelcolor];
   %Each surface can have a different color if you like. Just change
   %the last three numbers on the row corresponding to that
   %surface. 
