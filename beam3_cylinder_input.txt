@@ -1,18 +1,18 @@
 variables
 %All of these actions are not the most efficient for this problem.
-d=74
-l=190
+d=74e-9
+l=190e-9
 Ixx1=pi/64*d^4
-Ixx2=pi/64*(d-6.4)^4
-Ixx3=pi/64*(d-12.8)^4
-Ixx4=pi/64*(d-19.2)^4
-Ixx5=pi/64*(d-25.6)^4
-Ixx6=pi/64*(d-32)^4
-Ixx7=pi/64*(d-38.4)^4
-Ixx8=pi/64*(d-44.8)^4
-Ixx9=pi/64*(d-51.2)^4
-Ixx10=pi/64*(d-57.6)^4
-Ixx11=pi/64*(d-64)^4
+Ixx2=pi/64*(d-6.4e-9)^4
+Ixx3=pi/64*(d-12.8e-9)^4
+Ixx4=pi/64*(d-19.2e-9)^4
+Ixx5=pi/64*(d-25.6e-9)^4
+Ixx6=pi/64*(d-32e-9)^4
+Ixx7=pi/64*(d-38.4e-9)^4
+Ixx8=pi/64*(d-44.8e-9)^4
+Ixx9=pi/64*(d-51.2e-9)^4
+Ixx10=pi/64*(d-57.6e-9)^4
+Ixx11=pi/64*(d-64e-9)^4
 Iyy1=Ixx1
 Iyy2=Ixx2
 Iyy3=Ixx3
@@ -39,11 +39,11 @@ J11=Ixx11+Iyy11
 element properties
 % Beam format
 % E G rho A1     A2       A3   J1 J2 J3 Ixx1 Ixx2 Ixx3 Iyy1 Iyy2 Iyy3
-steel    pi/4*d^2 pi/4*(d-6.4)^2 pi/4*(d-12.8)^2 J1 J2 J3 Ixx1 Ixx2 Ixx3 Iyy1 Iyy2 Iyy3
-steel    pi/4*(d-12.8)^2 pi/4*(d-19.2)^2 pi/4*(d-25.6)^2 J3 J4 J5 Ixx3 Ixx4 Ixx5 Iyy3 Iyy4 Iyy5
-steel    pi/4*(d-25.6)^2 pi/4*(d-32)^2 pi/4*(d-38.4)^2 J5 J6 J7 Ixx5 Ixx6 Ixx7 Iyy5 Iyy6 Iyy7
-steel    pi/4*(d-38.4)^2 pi/4*(d-44.8)^2 pi/4*(d-51.2)^2 J7 J8 J9 Ixx7 Ixx8 Ixx9 Iyy7 Iyy8 Iyy9
-steel    pi/4*(d-51.2)^2 pi/4*(d-57.6)^2 pi/4*(d-64)^2 J9 J10 J11 Ixx9 Ixx10 Ixx11 Iyy9 Iyy10 Iyy11
+steel    pi/4*d^2 pi/4*(d-6.4e-9)^2 pi/4*(d-12.8e-9)^2 J1 J2 J3 Ixx1 Ixx2 Ixx3 Iyy1 Iyy2 Iyy3
+steel    pi/4*(d-12.8e-9)^2 pi/4*(d-19.2e-9)^2 pi/4*(d-25.6e-9)^2 J3 J4 J5 Ixx3 Ixx4 Ixx5 Iyy3 Iyy4 Iyy5
+steel    pi/4*(d-25.6e-9)^2 pi/4*(d-32e-9)^2 pi/4*(d-38.4e-9)^2 J5 J6 J7 Ixx5 Ixx6 Ixx7 Iyy5 Iyy6 Iyy7
+steel    pi/4*(d-38.4e-9)^2 pi/4*(d-44.8e-9)^2 pi/4*(d-51.2e-9)^2 J7 J8 J9 Ixx7 Ixx8 Ixx9 Iyy7 Iyy8 Iyy9
+steel    pi/4*(d-51.2e-9)^2 pi/4*(d-57.6e-9)^2 pi/4*(d-64e-9)^2 J9 J10 J11 Ixx9 Ixx10 Ixx11 Iyy9 Iyy10 Iyy11
 
 beam3example elements
 %node1 node2 node3 pointnum (beam properties number)
@@ -75,7 +75,7 @@ fix clamp
 1
 
 load 
-11 1 10
+11 1 10e-9
 
 actions
 staticanalysis
